@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Row } from 'antd';
 import { selectLatest, fetchLatest } from '../app/slices/latestSlice';
-import PhoneCard from './PhoneCard';
+import PhoneCard from './PhoneCard/PhoneCard';
 
 function LatestPhones() {
 	const dispatch = useDispatch();
@@ -10,13 +10,13 @@ function LatestPhones() {
 	const latestStatus = useSelector(state => state.latest.status);
 
 	useEffect(() => {
-		if (latestStatus === 'idle') {
+		if ((!latest || !latest.length) && latestStatus === 'idle') {
 			dispatch(fetchLatest());
 		}
-	}, [latestStatus, dispatch]);
+	}, [latest, latestStatus, dispatch]);
 
 	return (
-		<Row gutter={[16, 16]} style={{margin: 0}}>
+		<Row gutter={[16, 16]} style={{ margin: 0 }}>
 			{latest.map(phone => (
 				<PhoneCard key={phone.DeviceName} phone={phone}/>
 			))}

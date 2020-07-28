@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import API from '../../api';
 
 const initialState = {
-	latest: [],
+	latest: JSON.parse(localStorage.getItem('phones')) || [],
 	status: 'idle',
 	error: null
 };
@@ -22,6 +22,7 @@ const latestSlice = createSlice({
 		[fetchLatest.fulfilled]: (state, action) => {
 			state.status = 'succeeded';
 			state.latest = action.payload;
+			localStorage.setItem('phones', JSON.stringify(action.payload));
 		},
 		[fetchLatest.rejected]: (state, action) => {
 			state.status = 'failed';
