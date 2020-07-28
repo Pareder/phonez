@@ -1,4 +1,8 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app), using the [Redux](https://redux.js.org/) and [Redux Toolkit](https://redux-toolkit.js.org/) template.
+# [Phonez](https://phonez.netlify.app)
+
+[![Netlify Status](https://api.netlify.com/api/v1/badges/faec3547-0ec6-45bb-bfe1-36d748abb569/deploy-status)](https://app.netlify.com/sites/phonez/deploys)
+
+Web application presenting smartphones information built with [fonoApi](https://fonoapi.freshpixl.com) and hosted with [Netlify](https://www.netlify.com).
 
 ## Available Scripts
 
