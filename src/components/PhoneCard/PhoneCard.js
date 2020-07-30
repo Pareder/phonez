@@ -13,12 +13,13 @@ function PhoneCard({ phone }) {
 			<Card
 				hoverable
 				title={ phone.DeviceName }
-				actions={[<Button
-					type="link"
-					onClick={setIsModalVisible.bind(null, true)}
-				>
-					More
-				</Button>
+				actions={[
+					<Button
+						type="link"
+						onClick={setIsModalVisible.bind(null, true)}
+					>
+						More
+					</Button>
 				]}
 			>
 				<Meta className={styles.meta} description={
@@ -27,30 +28,42 @@ function PhoneCard({ phone }) {
 						<p>{ phone.status }</p>
 					</>
 				} />
-				<p>
-					<strong>Size: </strong>
-					{ phone.size }
-				</p>
-				<p>
-					<strong>CPU: </strong>
-					{ phone.cpu }
-				</p>
-				<p>
-					<strong>GPU: </strong>
-					{ phone.gpu }
-				</p>
-				<p>
-					<strong>Battery: </strong>
-					{ phone.battery_c}
-				</p>
-				<p>
-					<strong>OS: </strong>
-					{ phone.os }
-				</p>
-				<p>
-					<strong>Price: </strong>
-					<span dangerouslySetInnerHTML={{ __html: phone.price }}/>
-				</p>
+				{phone.size && (
+					<p>
+						<strong>Size: </strong>
+						{ phone.size }
+					</p>
+				)}
+				{phone.cpu && (
+					<p>
+						<strong>CPU: </strong>
+						{ phone.cpu }
+					</p>
+				)}
+				{phone.gpu && (
+					<p>
+						<strong>GPU: </strong>
+						{ phone.gpu }
+					</p>
+				)}
+				{phone.battery_c && (
+					<p>
+						<strong>Battery: </strong>
+						{ phone.battery_c }
+					</p>
+				)}
+				{phone.os && (
+					<p>
+						<strong>OS: </strong>
+						{ phone.os }
+					</p>
+				)}
+				{phone.price && (
+					<p>
+						<strong>Price: </strong>
+						<span dangerouslySetInnerHTML={{ __html: phone.price }}/>
+					</p>
+				)}
 			</Card>
 			<PhoneModal visible={isModalVisible} phone={phone} onChange={setIsModalVisible} />
 		</Col>

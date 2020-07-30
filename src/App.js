@@ -1,5 +1,5 @@
 import React from 'react';
-import LatestPhones from './components/LatestPhones';
+import LatestPhones from './components/LatestPhones/LatestPhones';
 
 function App() {
   return <LatestPhones />;
