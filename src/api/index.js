@@ -17,7 +17,22 @@ class API {
 	 * @returns {Promise<any>}
 	 */
 	async getLatest(options) {
-		return await this._getFromURL('getlatest', options);
+		const latest = await this._getFromURL('getlatest', options);
+		for (const phone of latest) {
+			if (phone.cpu) {
+				const cpu = phone.cpu.match(/^(\S+)\s(.*)/) || [];
+				phone.cpu = cpu[1] || phone.cpu;
+				phone.cpuInfo = cpu[2] || null;
+			}
+
+			if (phone.os) {
+				const os = phone.os.match(/^(\S+)\s(.*)/) || [];
+				phone.os = os[1] || phone.os;
+				phone.osInfo = os[2] || null;
+			}
+		}
+
+		return latest;
 	}
 
 	/**

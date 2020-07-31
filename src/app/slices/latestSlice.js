@@ -1,5 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSelector } from 'reselect';
 import API from '../../api';
+import filterFormatters from './config/filterFormatters';
 
 const initialState = {
 	latest: JSON.parse(localStorage.getItem('phones')) || [],
@@ -12,7 +14,8 @@ const initialState = {
 		gpu: '',
 		battery: '',
 		os: ''
-	}
+	},
+	filtersOrder: []
 };
 
 export const fetchLatest = createAsyncThunk('latest/fetchLatest', async options => {
@@ -24,9 +27,17 @@ const latestSlice = createSlice({
 	initialState,
 	reducers: {
 		setFilters(state, action) {
-			state.filters = {
-				...state.filters,
-				...action.payload
+			for (const [filterName, filterValue] of Object.entries(action.payload)) {
+				state.filters[filterName] = filterValue;
+
+				if (filterValue) {
+					state.filtersOrder.push(filterName);
+				} else {
+					const filterIndex = state.filtersOrder.findIndex(filter => filter === filterName);
+					if (filterIndex !== -1) {
+						state.filtersOrder.splice(filterIndex, 1);
+					}
+				}
 			}
 		}
 	},
@@ -48,89 +59,134 @@ const latestSlice = createSlice({
 
 export const { setFilters } = latestSlice.actions;
 
-export const selectLatest = state => state.latest.latest.filter(phone => {
-	if (state.latest.filters.search
-		&& !phone.DeviceName.toLowerCase().includes(state.latest.filters.search.toLowerCase())) {
-		return false;
+const filterLatest = (latest, filters, filtersOrder) => {
+	return latest.filter(phone => {
+		for (const filter of filtersOrder) {
+			if (filtersOrder.includes(filter)
+				&& filters[filter]
+				&& filterFormatters[filter].formatter(phone[filterFormatters[filter].value])(filters)) {
+				return false;
+			}
+		}
+
+		return true;
+	})
+};
+
+const filterFiltersOrder = (filterName, filtersOrder) => {
+	const newFiltersOrder = [];
+	for (const filter of filtersOrder) {
+		if (filter === filterName) {
+			break;
+		}
+
+		newFiltersOrder.push(filter);
 	}
 
-	if (state.latest.filters.brand && (
-		!phone.Brand || phone.Brand.toLowerCase() !== state.latest.filters.brand.toLowerCase()
-	)) {
-		return false;
+	return newFiltersOrder;
+};
+
+const latestSelector = state => state.latest.latest;
+export const filtersSelector = state => state.latest.filters;
+const filtersOrderSelector = state => state.latest.filtersOrder;
+
+export const selectLatest = createSelector(
+	latestSelector,
+	filtersSelector,
+	filtersOrderSelector,
+	(latest, filters, filtersOrder) => filterLatest(latest, filters, filtersOrder)
+);
+
+export const selectBrands = createSelector(
+	latestSelector,
+	filtersSelector,
+	filtersOrderSelector,
+	(latest, filters, filtersOrder) => {
+		const newFiltersOrder = filterFiltersOrder('brand', filtersOrder);
+		const newLatest = filterLatest(latest, filters, newFiltersOrder);
+
+		return [...newLatest.reduce((set, phone) => {
+			if (phone.Brand) {
+				set.add(phone.Brand);
+			}
+
+			return set;
+		}, new Set())];
 	}
+);
 
-	if (state.latest.filters.cpu && (
-		!phone.cpu || !phone.cpu.toLowerCase().includes(state.latest.filters.cpu.toLowerCase())
-	)) {
-		return false;
+export const selectCPU = createSelector(
+	latestSelector,
+	filtersSelector,
+	filtersOrderSelector,
+	(latest, filters, filtersOrder) => {
+		const newFiltersOrder = filterFiltersOrder('cpu', filtersOrder);
+		const newLatest = filterLatest(latest, filters, newFiltersOrder);
+
+		return [...newLatest.reduce((set, phone) => {
+			if (phone.cpu) {
+				set.add(phone.cpu);
+			}
+
+			return set;
+		}, new Set())];
 	}
+);
 
-	if (state.latest.filters.gpu && (
-		!phone.gpu || !phone.gpu.toLowerCase().includes(state.latest.filters.gpu.toLowerCase())
-	)) {
-		return false;
+export const selectGPU = createSelector(
+	latestSelector,
+	filtersSelector,
+	filtersOrderSelector,
+	(latest, filters, filtersOrder) => {
+		const newFiltersOrder = filterFiltersOrder('gpu', filtersOrder);
+		const newLatest = filterLatest(latest, filters, newFiltersOrder);
+
+		return [...newLatest.reduce((set, phone) => {
+			const gpu = phone.gpu?.match(/^\S*/);
+			if (gpu) {
+				set.add(gpu[0]);
+			}
+
+			return set;
+		}, new Set())];
 	}
+);
 
-	if (state.latest.filters.battery && (
-		!phone.battery_c || !phone.battery_c.includes(state.latest.filters.battery)
-	)) {
-		return false;
+export const selectBatteries = createSelector(
+	latestSelector,
+	filtersSelector,
+	filtersOrderSelector,
+	(latest, filters, filtersOrder) => {
+		const newFiltersOrder = filterFiltersOrder('battery', filtersOrder);
+		const newLatest = filterLatest(latest, filters, newFiltersOrder);
+
+		return [...newLatest.reduce((set, phone) => {
+			const battery = phone.battery_c?.match(/\d+/);
+			if (battery) {
+				set.add(battery[0]);
+			}
+
+			return set;
+		}, new Set())];
 	}
+);
 
-	if (state.latest.filters.os && (
-		!phone.os || !phone.os.toLowerCase().includes(state.latest.filters.os.toLowerCase())
-	)) {
-		return false;
+export const selectOS = createSelector(
+	latestSelector,
+	filtersSelector,
+	filtersOrderSelector,
+	(latest, filters, filtersOrder) => {
+		const newFiltersOrder = filterFiltersOrder('os', filtersOrder);
+		const newLatest = filterLatest(latest, filters, newFiltersOrder);
+
+		return [...newLatest.reduce((set, phone) => {
+			if (phone.os) {
+				set.add(phone.os);
+			}
+
+			return set;
+		}, new Set())];
 	}
-
-	return true;
-});
-
-export const selectBrands = state => [...state.latest.latest.reduce((set, phone) => {
-	if (phone.Brand) {
-		set.add(phone.Brand);
-	}
-
-	return set;
-}, new Set())];
-
-export const selectCPU = state => [...state.latest.latest.reduce((set, phone) => {
-	const cpu = phone.cpu?.match(/^\S*/);
-	if (cpu) {
-		set.add(cpu[0]);
-	}
-
-	return set;
-}, new Set())];
-
-export const selectGPU = state => [...state.latest.latest.reduce((set, phone) => {
-	const gpu = phone.gpu?.match(/^\S*/);
-	if (gpu) {
-		set.add(gpu[0]);
-	}
-
-	return set;
-}, new Set())];
-
-export const selectBatteries = state => [...state.latest.latest.reduce((set, phone) => {
-	const battery = phone.battery_c?.match(/\d+/);
-	if (battery) {
-		set.add(battery[0]);
-	}
-
-	return set;
-}, new Set())];
-
-export const selectOS = state => [...state.latest.latest.reduce((set, phone) => {
-	const os = phone.os?.match(/^\S*/);
-	if (os) {
-		set.add(os[0]);
-	}
-
-	return set;
-}, new Set())];
-
-export const selectFilters = state => state.latest.filters;
+);
 
 export default latestSlice.reducer;

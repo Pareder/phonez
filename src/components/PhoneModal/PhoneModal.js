@@ -20,7 +20,7 @@ function PhoneModal({ visible, phone, onChange }) {
 			{categories.map(({ header, props }) => (
 				<List key={header}	header={<strong>{ header }</strong>} size="small">
 					{props.map(prop => {
-						const propValue = typeof prop === 'string' ? phone[prop] : prop.render(phone[prop.prop]);
+						const propValue = typeof prop === 'string' ? phone[prop] : prop(phone);
 						return propValue && <Item key={propValue}>{ propValue }</Item>;
 					})}
 				</List>

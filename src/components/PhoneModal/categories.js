@@ -9,18 +9,28 @@ const categories = [
 	},
 	{
 		header: 'Wireless',
-		props: ['technology', 'wlan', 'speed', 'bluetooth', 'gps', {
-			prop: 'nfc',
-			render: value => value?.toLowerCase().includes('yes') ? 'NFC' : null
-		}]
+		props: [
+			'technology',
+			'wlan',
+			'speed',
+			'bluetooth',
+			'gps',
+			phone => phone.nfc?.toLowerCase().includes('yes') ? 'NFC' : null
+		]
 	},
 	{
 		header: 'Hardware',
-		props: ['cpu', 'gpu', 'chipset', 'internal', 'card_slot']
+		props: [
+			({ cpu, cpuInfo }) => (cpu || cpuInfo) ? `${cpu || ''} ${cpuInfo || ''}` : '',
+			'gpu',
+			'chipset',
+			'internal',
+			'card_slot'
+		]
 	},
 	{
 		header: 'OS',
-		props: ['os']
+		props: [({ os, osInfo }) => (os || osInfo) ? `${os || ''} ${osInfo || ''}` : '']
 	},
 	{
 		header: 'SIM',
@@ -34,14 +44,8 @@ const categories = [
 		header: 'Sound',
 		props: [
 			'sound_c',
-			{
-				prop: 'loudspeaker_',
-				render: value => value && value.toLowerCase().includes('yes') ? 'Loudspeaker' : null
-			},
-			{
-				prop: '_3_5mm_jack_',
-				render: value => value && value.toLowerCase().includes('yes') ? '3.5mm jack' : null
-			}
+			phone => phone.loudspeaker_?.toLowerCase().includes('yes') ? 'Loudspeaker' : null,
+			phone => phone._3_5mm_jack_?.toLowerCase().includes('yes') ? '3.5mm jack' : null,
 		]
 	},
 	{
