@@ -3,8 +3,22 @@ import { createSelector } from 'reselect';
 import API from '../../api';
 import filterFormatters from './config/filterFormatters';
 
+const getSavedLatest = () => {
+	const phones = JSON.parse(localStorage.getItem('phones'));
+	if (!phones) {
+		return [];
+	}
+
+	// One weekend ago
+	if (phones.date < new Date().setDate(new Date().getDate() - 7)) {
+		return [];
+	}
+
+	return phones.latest;
+};
+
 const initialState = {
-	latest: JSON.parse(localStorage.getItem('phones')) || [],
+	latest: getSavedLatest(),
 	status: 'idle',
 	error: null,
 	filters: {
@@ -48,7 +62,10 @@ const latestSlice = createSlice({
 		[fetchLatest.fulfilled]: (state, action) => {
 			state.status = 'succeeded';
 			state.latest = action.payload;
-			localStorage.setItem('phones', JSON.stringify(action.payload));
+			localStorage.setItem('phones', JSON.stringify({
+				latest: action.payload,
+				date: Date.now()
+			}));
 		},
 		[fetchLatest.rejected]: (state, action) => {
 			state.status = 'failed';
