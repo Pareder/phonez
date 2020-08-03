@@ -1,8 +1,9 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Col, Form, Input } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
+import { Button, Col, Form, Input } from 'antd';
+import { ClearOutlined, SearchOutlined } from '@ant-design/icons';
 import {
+	DEFAULT_FILTERS,
 	filtersSelector,
 	setFilters,
 } from '../../app/slices/latestSlice';
@@ -64,6 +65,14 @@ function PhoneForm() {
 					<SelectOS onChange={onChange} />
 				</Form.Item>
 			</Col>
+			<Button
+				className={styles.form__button}
+				type="primary"
+				icon={<ClearOutlined />}
+				onClick={onChange.bind(null, DEFAULT_FILTERS)}
+			>
+				Clear filters
+			</Button>
 		</Form>
 	);
 }

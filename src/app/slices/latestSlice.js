@@ -17,18 +17,20 @@ const getSavedLatest = () => {
 	return phones.latest;
 };
 
+export const DEFAULT_FILTERS = {
+	search: '',
+	brand: '',
+	cpu: '',
+	gpu: '',
+	battery: '',
+	os: ''
+};
+
 const initialState = {
 	latest: getSavedLatest(),
 	status: 'idle',
 	error: null,
-	filters: {
-		search: '',
-		brand: '',
-		cpu: '',
-		gpu: '',
-		battery: '',
-		os: ''
-	},
+	filters: { ...DEFAULT_FILTERS },
 	filtersOrder: []
 };
 
