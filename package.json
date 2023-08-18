@@ -2,28 +2,33 @@
   "name": "phonez",
   "version": "1.0.0",
   "engines": {
-    "node": "12.18.2"
+    "node": "18.16.0"
   },
   "author": "Pareder",
   "license": "MIT",
-  "main": "server.js",
   "dependencies": {
-    "@reduxjs/toolkit": "^1.4.0",
-    "@testing-library/jest-dom": "^4.2.4",
-    "@testing-library/react": "^9.5.0",
-    "@testing-library/user-event": "^7.2.1",
-    "antd": "^4.5.0",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
-    "react-redux": "^7.2.1",
-    "react-scripts": "3.4.1",
-    "reselect": "^4.0.0"
+    "@reduxjs/toolkit": "^1.9.5",
+    "@testing-library/jest-dom": "^6.0.1",
+    "@testing-library/react": "^14.0.0",
+    "@testing-library/user-event": "^14.4.3",
+    "antd": "^5.8.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-redux": "^8.1.2",
+    "react-scripts": "^5.0.1"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "test": "react-scripts test --watchAll=false",
+    "lint": "npm run eslint && npm run stylelint",
+    "lint:fix": "npm run eslint:fix && npm run stylelint:fix",
+    "eslint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
+    "eslint:fix": "eslint src --fix --ext js,jsx",
+    "stylelint": "stylelint \"src/**/*.{css,scss}\"",
+    "stylelint:fix": "stylelint \"src/**/*.{css,scss}\" --fix",
+    "eject": "react-scripts eject",
+    "prepare": "husky install"
   },
   "browserslist": {
     "production": [
@@ -38,6 +43,16 @@
     ]
   },
   "devDependencies": {
-    "@babel/plugin-proposal-optional-chaining": "^7.10.4"
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "husky": "^8.0.0",
+    "lint-staged": "^14.0.0"
+  },
+  "lint-staged": {
+    "src/**/*.{js,jsx}": [
+      "eslint"
+    ],
+    "src/**/*.{css,scss}": [
+      "stylelint"
+    ]
   }
 }

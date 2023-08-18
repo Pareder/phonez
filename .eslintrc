@@ -1,12 +1,18 @@
 {
   "extends": [
-    "react-app"
+    "react-app",
+    "react-app/jest"
   ],
   "rules": {
     "object-curly-spacing": [
       "error",
       "always"
     ],
-    "max-len": ["error", { "code": 140 }]
+    "max-len": ["error", { "code": 140 }],
+    "semi": ["error", "always"],
+    "quotes": ["error", "single"],
+    "eol-last": ["error", "always"],
+    "comma-dangle": ["error", "always-multiline"],
+    "react/jsx-curly-spacing": ["error", { "when": "never", "children":  true }]
   }
 }

@@ -2,7 +2,7 @@
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/faec3547-0ec6-45bb-bfe1-36d748abb569/deploy-status)](https://app.netlify.com/sites/phonez/deploys)
 
-Web application presenting smartphones information built with [fonoApi](https://fonoapi.freshpixl.com) and hosted with [Netlify](https://www.netlify.com).
+Web application presenting smartphones information built with [Phone Specifications API](https://github.com/azharimm/phone-specs-api) and hosted with [Netlify](https://www.netlify.com).
 
 ## Available Scripts
 

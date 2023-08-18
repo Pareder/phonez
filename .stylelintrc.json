@@ -1,0 +1,11 @@
+{
+  "extends": "stylelint-config-standard",
+  "rules": {
+    "at-rule-no-unknown": null,
+    "at-rule-allowed-list": ["include", "import", "keyframes", "mixin", "extend", "media", "each", "supports"],
+    "function-no-unknown": [true, { "ignoreFunctions": ["lighten", "darken"] }],
+    "import-notation": "string",
+    "media-query-no-invalid": null
+  },
+  "customSyntax": "postcss-scss"
+}

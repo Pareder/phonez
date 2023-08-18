@@ -2,64 +2,61 @@ import API from '../../api';
 
 const url = 'url.com';
 
+const PHONE = {
+  phone_name: 'device',
+  slug: 'slug',
+};
+
 describe('API', () => {
-	beforeAll(() => {
-		global.fetch = jest.fn(() =>
-			Promise.resolve({
-				json: () => Promise.resolve([{
-					DeviceName: 'device',
-					cpu: 'Octa-core (some info about cpu)',
-					os: 'OS (some info about OS)'
-				}])
-			})
-		);
-	});
+  beforeEach(() => {
+    jest.spyOn(global, 'fetch').mockReturnValue({
+      json: () => ({
+        data: {
+          phones: [PHONE],
+        },
+      }),
+    });
+  });
 
-	describe('createFrom static method', () => {
-		it('Should return an instance of API', () => {
-			expect(API.createFrom()).toBeInstanceOf(API);
-		});
-	});
+  describe('create static method', () => {
+    it('Should return an instance of API', () => {
+      expect(API.create()).toBeInstanceOf(API);
+    });
+  });
 
-	describe('getLatest method', () => {
-		it('Should call fetch with correct parameters', async () => {
-			await new API(url).getLatest();
+  describe('getLatest method', () => {
+    it('Should call fetch with correct parameters', async () => {
+      await new API(url).getLatest();
 
-			expect(fetch).toBeCalledWith(`https://${url}/getlatest`, {
-				method: 'POST',
-				headers: {
-					Accept: 'application/json',
-					'Content-Type': 'application/json'
-				},
-				body: expect.any(String)
-			});
-		});
+      expect(fetch).toBeCalledWith(`${url}/latest`, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      });
+    });
 
-		it('Should return correct result', async () => {
-			const result = await new API(url).getLatest();
+    it('Should return correct result', async () => {
+      const result = await new API(url).getLatest();
 
-			expect(result).toEqual([{
-				DeviceName: 'device',
-				cpu: 'Octa-core',
-				cpuInfo: '(some info about cpu)',
-				os: 'OS',
-				osInfo: '(some info about OS)'
-			}]);
-		});
-	});
+      expect(result).toEqual([PHONE]);
+    });
+  });
 
-	describe('getDevice method', () => {
-		it('Should call fetch with correct parameters', async () => {
-			await new API(url).getDevice();
+  describe('getDevice method', () => {
+    it('Should call fetch with correct parameters', async () => {
+      const slug = 'slug';
 
-			expect(fetch).toBeCalledWith(`https://${url}/getdevice`, {
-				method: 'POST',
-				headers: {
-					Accept: 'application/json',
-					'Content-Type': 'application/json'
-				},
-				body: expect.any(String)
-			});
-		});
-	});
+      await new API(url).getDevice(slug);
+
+      expect(fetch).toBeCalledWith(`${url}/${slug}`, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      });
+    });
+  });
 });

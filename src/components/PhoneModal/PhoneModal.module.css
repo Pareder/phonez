@@ -1,3 +1,20 @@
 .modal {
     top: 20px;
 }
+
+.title {
+    margin: 0;
+    text-transform: capitalize;
+}
+
+.loader {
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.image {
+    height: 300px;
+    object-fit: contain;
+}

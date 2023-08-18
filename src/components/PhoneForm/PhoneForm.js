@@ -1,38 +1,40 @@
-import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Col, Form, Input } from 'antd';
 import { ClearOutlined, SearchOutlined } from '@ant-design/icons';
+
 import {
 	DEFAULT_FILTERS,
-	filtersSelector,
+	fetchLatest,
+	selectFilters,
 	setFilters,
-} from '../../app/slices/latestSlice';
+} from 'store/slices/latestSlice';
+
+import SelectBrand from './SelectBrand';
 import styles from './PhoneForm.module.css';
-import SelectBrand from './selects/SelectBrand';
-import SelectCPU from './selects/SelectCPU';
-import SelectGPU from './selects/SelectGPU';
-import SelectBattery from './selects/SelectBattery';
-import SelectOS from './selects/SelectOS';
 
 function PhoneForm() {
 	const [form] = Form.useForm();
-	const { search } = useSelector(filtersSelector);
+	const { search } = useSelector(selectFilters);
 	const dispatch = useDispatch();
 
 	const onChange = filters => {
 		dispatch(setFilters(filters));
 	};
 
+	const clear = () => {
+		dispatch(setFilters(DEFAULT_FILTERS));
+		dispatch(fetchLatest());
+	};
+
 	return (
 		<Form
 			layout="inline"
 			size="large"
-			className={styles.form}
 			form={form}
 			onValuesChange={onChange}
 		>
-			<Col xs={24} sm={12} lg={8}>
-				<Form.Item name="search" className={styles.form__item}>
+			<Col xs={24} sm={12}>
+				<Form.Item name="search" className={styles.item}>
 					<Input
 						placeholder="Type phone name"
 						prefix={<SearchOutlined />}
@@ -40,36 +42,16 @@ function PhoneForm() {
 					/>
 				</Form.Item>
 			</Col>
-			<Col xs={24} sm={12} lg={8}>
-				<Form.Item name="brand" className={styles.form__item}>
-					<SelectBrand onChange={onChange} />
-				</Form.Item>
-			</Col>
-			<Col xs={24} sm={12} lg={8}>
-				<Form.Item name="cpu" className={styles.form__item}>
-					<SelectCPU onChange={onChange} />
-				</Form.Item>
-			</Col>
-			<Col xs={24} sm={12} lg={8}>
-				<Form.Item name="gpu" className={styles.form__item}>
-					<SelectGPU onChange={onChange} />
-				</Form.Item>
-			</Col>
-			<Col xs={24} sm={12} lg={8}>
-				<Form.Item name="battery" className={styles.form__item}>
-					<SelectBattery onChange={onChange} />
-				</Form.Item>
-			</Col>
-			<Col xs={24} sm={12} lg={8}>
-				<Form.Item name="os" className={styles.form__item}>
-					<SelectOS onChange={onChange} />
+			<Col xs={24} sm={12}>
+				<Form.Item name="brand" className={styles.item}>
+					<SelectBrand />
 				</Form.Item>
 			</Col>
 			<Button
-				className={styles.form__button}
+				className={styles.btn}
 				type="primary"
 				icon={<ClearOutlined />}
-				onClick={onChange.bind(null, DEFAULT_FILTERS)}
+				onClick={clear}
 			>
 				Clear filters
 			</Button>
